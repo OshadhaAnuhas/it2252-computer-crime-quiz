@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IT2252 Computer Crime MCQ Quiz</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6fb;
+      color: #1f2937;
+      line-height: 1.5;
+    }
+    header {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: white;
+      padding: 28px 16px;
+      text-align: center;
+    }
+    header h1 { margin: 0 0 8px; font-size: 1.8rem; }
+    header p { margin: 0; opacity: 0.95; }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin: 16px 0;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+    .top-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      align-items: center;
+    }
+    select, button {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover { background: #1d4ed8; }
+    button.secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+    button.secondary:hover { background: #d1d5db; }
+    .progress-wrap {
+      margin-top: 14px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      height: 12px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #22c55e;
+      transition: width 0.2s ease;
+    }
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: #4b5563;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+    .question {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 18px;
+    }
+    .option {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 10px 0;
+      padding: 14px;
+      border-radius: 12px;
+      background: #f9fafb;
+      border: 1px solid #d1d5db;
+      color: #111827;
+      cursor: pointer;
+      font-weight: normal;
+    }
+    .option:hover { background: #eef2ff; }
+    .option.correct {
+      background: #dcfce7;
+      border-color: #22c55e;
+    }
+    .option.wrong {
+      background: #fee2e2;
+      border-color: #ef4444;
+    }
+    .option.disabled { cursor: not-allowed; }
+    .feedback {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.correct { background: #dcfce7; color: #166534; }
+    .feedback.wrong { background: #fee2e2; color: #991b1b; }
+    .nav-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .result-title { font-size: 1.6rem; margin: 0 0 12px; }
+    .review-item {
+      border-top: 1px solid #e5e7eb;
+      padding: 14px 0;
+    }
+    .hidden { display: none; }
+    .small { font-size: 0.9rem; color: #6b7280; }
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.45rem; }
+      .question { font-size: 1.05rem; }
+      .container { padding: 12px; }
+      .card { padding: 16px; border-radius: 12px; }
+      .nav-buttons { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>IT2252 Computer Crime MCQ Quiz</h1>
+    <p>Practice quiz for Computer Crime, Malware, CIA Triad, Prevention, Risk, and Ethics</p>
+  </header>
+
+  <main class="container">
+    <section id="setup" class="card">
+      <h2>Start Quiz</h2>
+      <p class="small">Choose a mode. The questions are already arranged from high priority to low priority.</p>
+      <div class="top-controls">
+        <div>
+          <label for="mode"><strong>Quiz mode</strong></label>
+          <select id="mode">
+            <option value="55">High priority only - 55 questions</option>
+            <option value="88">Theory coverage - 88 questions</option>
+            <option value="100">Full quiz - 100 questions</option>
+            <option value="20">Quick revision - 20 random questions</option>
+          </select>
+        </div>
+        <div>
+          <label for="shuffle"><strong>Question order</strong></label>
+          <select id="shuffle">
+            <option value="no">Priority order</option>
+            <option value="yes">Shuffle questions</option>
+          </select>
+        </div>
+        <div>
+          <label for="instant"><strong>Feedback</strong></label>
+          <select id="instant">
+            <option value="yes">Show answer immediately</option>
+            <option value="no">Show score at the end only</option>
+          </select>
+        </div>
+      </div>
+      <br />
+      <button onclick="startQuiz()">Start</button>
+    </section>
+
+    <section id="quiz" class="card hidden">
+      <div class="meta">
+        <span id="questionCounter"></span>
+        <span id="scoreCounter"></span>
+      </div>
+      <div class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div>
+      <br />
+      <div id="questionText" class="question"></div>
+      <div id="options"></div>
+      <div id="feedback" class="feedback"></div>
+      <div class="nav-buttons">
+        <button class="secondary" onclick="previousQuestion()">Previous</button>
+        <button id="nextButton" onclick="nextQuestion()">Next</button>
+      </div>
+    </section>
+
+    <section id="result" class="card hidden">
+      <h2 class="result-title">Quiz Complete</h2>
+      <p id="finalScore"></p>
+      <p id="finalMessage"></p>
+      <div class="nav-buttons">
+        <button onclick="restartSameQuiz()">Retry Same Quiz</button>
+        <button class="secondary" onclick="backToSetup()">Change Settings</button>
+      </div>
+      <h3>Review</h3>
+      <div id="review"></div>
+    </section>
+  </main>
+
+  <script>
+    const allQuestions = [
+      {q:'What is malware?', options:['Software used only for system updates','Software designed to perform malicious activities','Software used to improve computer speed','Software used only for backup'], answer:1},
+      {q:'Which malware attaches itself to a file and runs when the infected file is opened?', options:['Worm','Virus','Rootkit','Spyware'], answer:1},
+      {q:'Which malware can spread without needing a host file?', options:['Virus','Trojan horse','Worm','Spyware'], answer:2},
+      {q:'A user downloads a “free game,” but it secretly installs harmful code. What type of malware is this?', options:['Trojan horse','Worm','Rootkit','Ransomware'], answer:0},
+      {q:'Malware that encrypts files and demands payment is called:', options:['Spyware','Rootkit','Ransomware','Virus'], answer:2},
+      {q:'Malware that secretly collects information about the user is called:', options:['Spyware','Worm','Virus','Logic bomb'], answer:0},
+      {q:'A rootkit is mainly used to:', options:['Compress files','Give attacker administrator-level access and hide itself','Improve system performance','Create backups'], answer:1},
+      {q:'Which statement best describes a virus?', options:['It spreads only through wireless networks','It is always harmless','It is usually attached to a file','It never requires user action'], answer:2},
+      {q:'Which statement best describes a worm?', options:['It must attach to a host file','It cannot duplicate itself','It can duplicate itself and spread independently','It only collects user data'], answer:2},
+      {q:'Which of the following is an example of ransomware behavior?', options:['Reading network traffic silently','Pretending to be a login page','Encrypting files and demanding money','Checking system temperature'], answer:2},
+      {q:'A passive attack mainly involves:', options:['Changing system files','Destroying databases','Observing or collecting information','Blocking system access'], answer:2},
+      {q:'Which of the following is a passive attack?', options:['Denial-of-service','Traffic analysis','Data modification','Masquerade'], answer:1},
+      {q:'An active attack mainly involves:', options:['Only observing communication','Changing, disrupting, or damaging system activity','Backing up data','Reading data without any effect'], answer:1},
+      {q:'Which of the following is an active attack?', options:['Traffic analysis','Message content reading','Denial-of-service','Silent monitoring'], answer:2},
+      {q:'An attacker pretends to be an authorized user. This is called:', options:['Replay','Masquerade','Traffic analysis','Spyware'], answer:1},
+      {q:'An attacker captures a valid message and sends it again later. This is:', options:['Replay attack','Worm attack','Rootkit attack','Passive monitoring'], answer:0},
+      {q:'An attacker changes the amount in an online transaction. This is:', options:['Data modification','Traffic analysis','Replay','Spyware'], answer:0},
+      {q:'A university website becomes unavailable because attackers flood it with requests. This is:', options:['Replay attack','Denial-of-service attack','Masquerade attack','Trojan horse'], answer:1},
+      {q:'Which CIA principle is violated when private customer records are leaked?', options:['Availability','Integrity','Confidentiality','Authentication'], answer:2},
+      {q:'Which CIA principle is violated when student marks are changed without permission?', options:['Confidentiality','Integrity','Availability','Privacy'], answer:1},
+      {q:'Which CIA principle is affected when users cannot access a system due to a DDoS attack?', options:['Availability','Integrity','Confidentiality','Non-repudiation'], answer:0},
+      {q:'In the CIA triad, “I” stands for:', options:['Identification','Internet','Integrity','Inspection'], answer:2},
+      {q:'In the CIA triad, “A” stands for:', options:['Authentication','Availability','Authorization','Anonymity'], answer:1},
+      {q:'Which is the best example of confidentiality?', options:['A system is always online','Data is changed only by authorized users','Data is protected from unauthorized access','Backups are created daily'], answer:2},
+      {q:'Which is the best example of integrity?', options:['A user cannot access a website','An attacker reads private emails','Data remains accurate and is not changed without permission','A password is forgotten'], answer:2},
+      {q:'A computer crime is an illegal act where a computer is involved as:', options:['Only a storage device','Only a communication device','An object, tool, or repository of evidence','Only a gaming device'], answer:2},
+      {q:'Hacking into a company server is an example of the computer being:', options:['The object of the crime','A printer','A backup tool','A legal device'], answer:0},
+      {q:'Sending phishing emails using a laptop is an example of the computer being:', options:['The object of crime','The tool used to commit crime','A physical lock','A security audit'], answer:1},
+      {q:'Stolen data stored on a criminal’s computer means the computer is:', options:['A repository of evidence','A firewall','A security policy','A biometric device'], answer:0},
+      {q:'Which of the following is a motive for computer crime?', options:['Political activism','Personal gain','Espionage','All of the above'], answer:3},
+      {q:'Which is NOT a common motive for computer crime?', options:['Revenge','Fame','Personal gain','Regular data backup'], answer:3},
+      {q:'Which reason contributes to the growth of cybercrime?', options:['Easy availability of hacker tools','Anonymity','Increasing dependency on computers','All of the above'], answer:3},
+      {q:'The Computer Crime Act No. 24 of 2007 belongs to:', options:['India','Sri Lanka','USA','China'], answer:1},
+      {q:'The Computer Crime Act No. 24 of 2007 provides for:', options:['Only buying computers','Identification, investigation, and prevention of computer crimes','Only installing antivirus software','Only creating passwords'], answer:1},
+      {q:'Accessing a computer without permission is:', options:['Authorized maintenance','Unauthorized access','Data backup','Disaster recovery'], answer:1},
+      {q:'Capturing data communication illegally is known as:', options:['Legal backup','Illegal interception','Role-based access','Security dashboard'], answer:1},
+      {q:'Sharing someone’s password or access information without authority may be:', options:['Unauthorized disclosure of access information','Physical protection','Normal user education','Antivirus scanning'], answer:0},
+      {q:'Planning with others to commit a computer crime is:', options:['Encryption','Conspiracy','Backup','Traffic analysis'], answer:1},
+      {q:'Helping someone commit a computer crime is:', options:['Abetment','Disaster recovery','Security audit','Privacy'], answer:0},
+      {q:'Trying to commit a computer crime, even if it fails, may be considered:', options:['Attempt','Backup','Access control','Antivirus protection'], answer:0},
+      {q:'Computer crime prevention focuses on:', options:['The computer, the criminal, and the innocent victim','Only the computer','Only the criminal','Only the police'], answer:0},
+      {q:'Which is a physical protective measure?', options:['Encryption','Strong doors and locks','Audit trail','Password hashing'], answer:1},
+      {q:'Restricting access to a computer room is an example of:', options:['Physical protection','Spyware','Replay attack','Ransomware'], answer:0},
+      {q:'Using security badges and a single entrance for a computer center is:', options:['Physical protection','Worm protection only','Data modification','Illegal interception'], answer:0},
+      {q:'Classifying data as “Confidential” or “Sensitive” is a:', options:['Physical measure','Procedural and operational measure','Malware type','DDoS attack'], answer:1},
+      {q:'Encrypting confidential data is mainly a:', options:['Procedural and operational protective measure','Joke/hoax','Passive attack','Trojan horse'], answer:0},
+      {q:'Audit trails are used to:', options:['Hide attacker activity','Log and track access or actions in a system','Delete all files','Spread malware'], answer:1},
+      {q:'Storing backup data offsite helps with:', options:['Recovery after loss or disaster','Increasing malware','Weakening access control','Illegal interception'], answer:0},
+      {q:'Reviewing failed login attempts can help detect:', options:['Possible unauthorized access attempts','Keyboard layout','Screen brightness','Hardware warranty'], answer:0},
+      {q:'Which is an antivirus protection measure?', options:['Avoid scanning downloads','Download more executable files','Scan downloaded files','Share infected files'], answer:2},
+      {q:'Why are regular backups important?', options:['They increase viruses','They help recovery after damage or ransomware','They remove the need for passwords','They make attacks legal'], answer:1},
+      {q:'Which of the following is a measure against computer criminals?', options:['Passing computer crime laws','Enforcement of criminal laws','Moral education','All of the above'], answer:3},
+      {q:'Moral education helps prevent computer crime by:', options:['Teaching ethics and responsible behavior','Giving admin access to everyone','Removing all passwords','Encouraging hacking'], answer:0},
+      {q:'Changing password codes when an employee leaves is part of:', options:['Personnel policy','Spyware','Replay attack','Illegal device usage'], answer:0},
+      {q:'Educating computer users is important because:', options:['Users can learn preventive steps and avoid becoming victims','Users can ignore all security rules','It removes the need for laws','It makes malware harmless'], answer:0},
+      {q:'Access control means:', options:['Controlling who can access systems or data','Increasing computer brightness','Removing all passwords','Downloading unknown software'], answer:0},
+      {q:'RBAC stands for:', options:['Random Backup Access Control','Role-Based Access Control','Remote Binary Attack Code','Risk-Based Antivirus Check'], answer:1},
+      {q:'In RBAC, access is given based on:', options:['User’s role','User’s favorite color','Computer brand','Internet speed'], answer:0},
+      {q:'Fingerprint authentication is an example of:', options:['Biometric authentication','Replay attack','Ransomware','Audit trail'], answer:0},
+      {q:'Which is an example of biometric authentication?', options:['Password','OTP','Retina scan','Backup file'], answer:2},
+      {q:'Two-factor authentication means:', options:['Using two different computers','Using two authentication factors','Using two browsers','Using two antivirus programs'], answer:1},
+      {q:'Which is an example of 2FA?', options:['Username only','Password only','Password + OTP','Email address only'], answer:2},
+      {q:'Shoulder surfing means:', options:['Physically damaging a computer','Watching someone enter confidential information such as a password','Encrypting a hard drive','Installing antivirus'], answer:1},
+      {q:'Why can very complex passwords become a problem?', options:['Users may write them down because they are hard to remember','They always make systems slower','They cannot be used online','They remove authentication'], answer:0},
+      {q:'Passwords stored in a system should ideally be:', options:['Written in plain text','Shared with all employees','Hashed','Printed and pasted on the wall'], answer:2},
+      {q:'Encryption is used to:', options:['Convert readable data into unreadable form for protection','Delete all files permanently','Make passwords public','Increase monitor brightness'], answer:0},
+      {q:'Which of the following is a symmetric encryption algorithm mentioned in the materials?', options:['AES-256','HTML','HTTP','FTP'], answer:0},
+      {q:'BitLocker is mainly used for:', options:['Disk/data encryption in Windows','Playing videos','Creating viruses','Traffic analysis'], answer:0},
+      {q:'Risk assessment is used to:', options:['Determine security risks faced by systems and networks','Create computer games','Remove all laws','Increase screen size'], answer:0},
+      {q:'In risk assessment, an asset is:', options:['Any hardware, software, system, network, or database used by the organization','Only money in a bank','Only a virus','Only an attacker'], answer:0},
+      {q:'A loss event is:', options:['An event that negatively affects an asset','A password policy','A type of keyboard','A computer brand'], answer:0},
+      {q:'A vulnerability is:', options:['A weakness that can be exploited','A backup file','A secure password','A security badge'], answer:0},
+      {q:'A threat is:', options:['An event or condition that can cause loss','A protection method','A legal user','A normal software update'], answer:0},
+      {q:'Risk is mainly based on:', options:['Color and size','Likelihood and impact','Username and password length only','Hardware brand'], answer:1},
+      {q:'An unpatched operating system is best described as a:', options:['Vulnerability','Security dashboard','Disaster recovery plan','Moral education'], answer:0},
+      {q:'A hacker attempting to exploit a system is best described as a:', options:['Threat','Backup','Audit trail','Smart card'], answer:0},
+      {q:'A server database containing customer records is an example of:', options:['Asset','Replay attack','Worm','Conspiracy'], answer:0},
+      {q:'Which is the correct general order in risk assessment?', options:['Identify assets → identify threats → assess likelihood and impact → choose mitigation','Pay ransom → delete backups → ignore threats','Create viruses → test on public systems → hide results','Remove all security policies → allow all access'], answer:0},
+      {q:'Cost-benefit analysis in security means:', options:['Checking whether a countermeasure is worth its cost','Buying the most expensive system always','Ignoring all cheap solutions','Avoiding all security controls'], answer:0},
+      {q:'Reasonable assurance means:', options:['Perfect security is always possible','Managers balance security cost with risk and benefit','Security is unnecessary','All attacks can be fully stopped'], answer:1},
+      {q:'A disaster recovery plan is used to:', options:['Recover IT assets after a disaster','Create malware','Hide passwords','Send spam'], answer:0},
+      {q:'Which of these can be part of disaster recovery?', options:['Hardware','Software','Data and networks','All of the above'], answer:3},
+      {q:'A mission-critical process is:', options:['A process essential for continued operation or survival','A small optional task','A social media post','A password hint'], answer:0},
+      {q:'A security policy defines:', options:['Security requirements, responsibilities, controls, and expected behavior','The color of the office wall','Only the lunch break time','The computer brand'], answer:0},
+      {q:'A security audit checks:', options:['Whether security policies exist and are followed','Whether chairs are comfortable','Whether users like the website design','Whether all computers are expensive'], answer:0},
+      {q:'A penetration test is used to:', options:['Identify vulnerabilities by testing defenses','Delete all evidence','Spread spyware','Create phishing messages'], answer:0},
+      {q:'Regulatory compliance means:', options:['Following external standards or legal requirements','Ignoring government rules','Sharing passwords','Avoiding audits'], answer:0},
+      {q:'A security dashboard is used to:', options:['Display security KPIs, threats, exposures, and alerts','Design logos','Encrypt only images','Replace all passwords'], answer:0},
+      {q:'A person discovers a serious vulnerability in software. What is the most ethical first action?', options:['Sell it immediately to criminals','Post full details publicly without warning','Report it responsibly to the vendor','Use it to hack users'], answer:2},
+      {q:'A vendor ignores a reported vulnerability. What is the best ethical approach?', options:['Immediately release exploit code publicly','Use responsible disclosure and escalate carefully','Attack the vendor’s system','Sell the vulnerability to anyone'], answer:1},
+      {q:'A worm that fixes a vulnerability without permission is:', options:['Always ethical because it helps','Still unethical because it accesses systems without authorization','Not considered software','Only a backup tool'], answer:1},
+      {q:'Your classmate says they will test malware on the university network without permission. What should you do?', options:['Encourage them','Join them','Tell them not to do it and report if necessary','Ignore it completely'], answer:2},
+      {q:'A bank’s customers receive fake SMS messages asking for login details. What should the bank do?', options:['Ignore it','Warn customers, block/report fake site, investigate, and notify authorities','Ask customers to enter their details quickly','Close all accounts permanently'], answer:1},
+      {q:'A company receives a ransom threat saying its customer database will be encrypted by a logic bomb. What is the best response?', options:['Immediately pay without investigation','Isolate systems, preserve evidence, check backups, and contact security/law enforcement','Delete all backups','Announce passwords publicly'], answer:1},
+      {q:'Hiring a former computer criminal as a white-hat hacker may be acceptable only if:', options:['They are given unlimited access with no rules','There are background checks, supervision, legal contracts, and clear authorization','They are allowed to attack any company','They hide findings from management'], answer:1},
+      {q:'Owners of zombie computers used in DDoS attacks are usually:', options:['Always the main attackers','Often victims too, but they should still be encouraged to secure their systems','Automatically guilty of terrorism','Required to create more bots'], answer:1},
+      {q:'Selling a zero-day exploit for personal profit instead of reporting it to the vendor is ethically questionable because:', options:['It may put many users at risk','It improves public safety automatically','It fixes the system immediately','It is the same as backup'], answer:0},
+      {q:'In cybersecurity ethics, authorization is important because:', options:['Good intentions always make hacking legal','Accessing systems without permission can still be unethical and illegal','Authorization only matters for physical doors','Malware testing never needs permission'], answer:1},
+      {q:'Which is the best ethical principle for handling vulnerabilities?', options:['Hide them forever','Responsibly disclose them to reduce harm','Publicly expose all details immediately','Sell them to the highest bidder always'], answer:1},
+      {q:'Which answer best fits most computer crime ethics scenarios?', options:['Do whatever is profitable','Unauthorized access is acceptable if the person is skilled','Reduce harm, follow law, get authorization, and protect users','Ignore victims'], answer:2}
+    ];
+
+    let quizQuestions = [];
+    let currentIndex = 0;
+    let userAnswers = [];
+    let instantFeedback = true;
+
+    function shuffleArray(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function startQuiz() {
+      const mode = document.getElementById('mode').value;
+      const shuffle = document.getElementById('shuffle').value === 'yes';
+      instantFeedback = document.getElementById('instant').value === 'yes';
+
+      if (mode === '20') {
+        quizQuestions = shuffleArray(allQuestions).slice(0, 20);
+      } else {
+        quizQuestions = allQuestions.slice(0, Number(mode));
+        if (shuffle) quizQuestions = shuffleArray(quizQuestions);
+      }
+
+      currentIndex = 0;
+      userAnswers = Array(quizQuestions.length).fill(null);
+      document.getElementById('setup').classList.add('hidden');
+      document.getElementById('result').classList.add('hidden');
+      document.getElementById('quiz').classList.remove('hidden');
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const question = quizQuestions[currentIndex];
+      document.getElementById('questionCounter').textContent = `Question ${currentIndex + 1} of ${quizQuestions.length}`;
+      document.getElementById('scoreCounter').textContent = `Score: ${calculateScore()} / ${answeredCount()}`;
+      document.getElementById('progressBar').style.width = `${((currentIndex + 1) / quizQuestions.length) * 100}%`;
+      document.getElementById('questionText').textContent = question.q;
+
+      const optionsDiv = document.getElementById('options');
+      optionsDiv.innerHTML = '';
+
+      question.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+        btn.onclick = () => selectAnswer(index);
+
+        if (userAnswers[currentIndex] !== null && instantFeedback) {
+          btn.classList.add('disabled');
+          if (index === question.answer) btn.classList.add('correct');
+          if (index === userAnswers[currentIndex] && index !== question.answer) btn.classList.add('wrong');
+        } else if (userAnswers[currentIndex] === index) {
+          btn.style.background = '#dbeafe';
+          btn.style.borderColor = '#2563eb';
+        }
+
+        optionsDiv.appendChild(btn);
+      });
+
+      updateFeedback();
+      document.getElementById('nextButton').textContent = currentIndex === quizQuestions.length - 1 ? 'Finish' : 'Next';
+    }
+
+    function selectAnswer(index) {
+      if (userAnswers[currentIndex] !== null && instantFeedback) return;
+      userAnswers[currentIndex] = index;
+      showQuestion();
+    }
+
+    function updateFeedback() {
+      const feedback = document.getElementById('feedback');
+      feedback.className = 'feedback';
+      feedback.textContent = '';
+
+      if (!instantFeedback || userAnswers[currentIndex] === null) return;
+
+      const question = quizQuestions[currentIndex];
+      const correct = userAnswers[currentIndex] === question.answer;
+      feedback.classList.add('show', correct ? 'correct' : 'wrong');
+      feedback.textContent = correct
+        ? 'Correct!'
+        : `Wrong. Correct answer: ${String.fromCharCode(65 + question.answer)}. ${question.options[question.answer]}`;
+    }
+
+    function nextQuestion() {
+      if (currentIndex < quizQuestions.length - 1) {
+        currentIndex++;
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function previousQuestion() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        showQuestion();
+      }
+    }
+
+    function answeredCount() {
+      return userAnswers.filter(a => a !== null).length;
+    }
+
+    function calculateScore() {
+      return userAnswers.reduce((score, ans, i) => ans === quizQuestions[i].answer ? score + 1 : score, 0);
+    }
+
+    function showResult() {
+      const score = calculateScore();
+      const total = quizQuestions.length;
+      const percent = Math.round((score / total) * 100);
+
+      document.getElementById('quiz').classList.add('hidden');
+      document.getElementById('result').classList.remove('hidden');
+      document.getElementById('finalScore').innerHTML = `<strong>Your score:</strong> ${score} / ${total} (${percent}%)`;
+
+      let message = '';
+      if (percent >= 85) message = 'Excellent. You are ready for the quiz.';
+      else if (percent >= 70) message = 'Good. Revise the wrong answers once more.';
+      else if (percent >= 50) message = 'Not bad, but you should repeat the high-priority sections.';
+      else message = 'You need another revision round. Focus on malware, attacks, CIA, and prevention first.';
+      document.getElementById('finalMessage').textContent = message;
+
+      const review = document.getElementById('review');
+      review.innerHTML = '';
+      quizQuestions.forEach((question, i) => {
+        const userAns = userAnswers[i];
+        const item = document.createElement('div');
+        item.className = 'review-item';
+        const userText = userAns === null ? 'Not answered' : `${String.fromCharCode(65 + userAns)}. ${question.options[userAns]}`;
+        const correctText = `${String.fromCharCode(65 + question.answer)}. ${question.options[question.answer]}`;
+        item.innerHTML = `
+          <strong>Q${i + 1}. ${question.q}</strong><br>
+          Your answer: ${userText}<br>
+          Correct answer: <span style="color:#166534;font-weight:bold;">${correctText}</span>
+        `;
+        review.appendChild(item);
+      });
+    }
+
+    function restartSameQuiz() {
+      currentIndex = 0;
+      userAnswers = Array(quizQuestions.length).fill(null);
+      document.getElementById('result').classList.add('hidden');
+      document.getElementById('quiz').classList.remove('hidden');
+      showQuestion();
+    }
+
+    function backToSetup() {
+      document.getElementById('result').classList.add('hidden');
+      document.getElementById('quiz').classList.add('hidden');
+      document.getElementById('setup').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
