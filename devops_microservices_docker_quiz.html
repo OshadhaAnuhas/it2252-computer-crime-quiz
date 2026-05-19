@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DevOps, Microservices & Docker MCQ Quiz</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --soft-card: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --primary: #38bdf8;
+      --primary-dark: #0284c7;
+      --correct: #22c55e;
+      --wrong: #ef4444;
+      --warning: #f59e0b;
+      --border: #334155;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #020617, #0f172a);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .container {
+      width: min(1000px, 94%);
+      margin: 0 auto;
+      padding: 24px 0 50px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.7rem, 4vw, 3rem);
+      color: var(--white);
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .top-panel {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .stat-card {
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .stat-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+    }
+
+    .stat-card strong {
+      font-size: 1.35rem;
+      color: var(--white);
+    }
+
+    .quiz-card {
+      background: rgba(17, 24, 39, 0.96);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .select-wrap {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    select, button {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    select {
+      background: var(--soft-card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    button {
+      background: var(--primary);
+      color: #00111d;
+      font-weight: bold;
+      transition: 0.2s ease;
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+      color: white;
+      transform: translateY(-1px);
+    }
+
+    button.secondary {
+      background: var(--soft-card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    button.secondary:hover {
+      background: #374151;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: #020617;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--correct));
+      transition: width 0.3s ease;
+    }
+
+    .question-meta {
+      color: var(--primary);
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .question {
+      font-size: 1.25rem;
+      line-height: 1.5;
+      margin-bottom: 18px;
+      color: var(--white);
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+    }
+
+    .option {
+      background: #0b1220;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 14px;
+      border-radius: 14px;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.2s ease;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+
+    .option:hover {
+      border-color: var(--primary);
+      background: #111c2f;
+    }
+
+    .option.correct {
+      background: rgba(34, 197, 94, 0.16);
+      border-color: var(--correct);
+      color: #bbf7d0;
+    }
+
+    .option.wrong {
+      background: rgba(239, 68, 68, 0.16);
+      border-color: var(--wrong);
+      color: #fecaca;
+    }
+
+    .option.disabled {
+      cursor: not-allowed;
+      opacity: 0.85;
+    }
+
+    .feedback {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 14px;
+      background: #0b1220;
+      border: 1px solid var(--border);
+      display: none;
+      line-height: 1.5;
+    }
+
+    .feedback.correct {
+      border-color: var(--correct);
+    }
+
+    .feedback.wrong {
+      border-color: var(--wrong);
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .result-card {
+      display: none;
+      text-align: center;
+      background: rgba(17, 24, 39, 0.96);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 24px;
+      margin-top: 18px;
+    }
+
+    .score-big {
+      font-size: 3rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin: 12px 0;
+    }
+
+    .review-list {
+      text-align: left;
+      margin-top: 22px;
+      display: none;
+    }
+
+    .review-item {
+      background: #0b1220;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .tag.correct {
+      background: rgba(34, 197, 94, 0.16);
+      color: #bbf7d0;
+    }
+
+    .tag.wrong {
+      background: rgba(239, 68, 68, 0.16);
+      color: #fecaca;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 25px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 760px) {
+      .top-panel {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .quiz-card {
+        padding: 16px;
+      }
+
+      .controls {
+        align-items: stretch;
+      }
+
+      .select-wrap, .controls button, select {
+        width: 100%;
+      }
+
+      .nav-buttons button {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>DevOps, Microservices & Docker Quiz</h1>
+      <p class="subtitle">
+        Practice MCQ quiz for ICA revision. Choose a section or attempt all questions.
+      </p>
+    </header>
+
+    <div class="top-panel">
+      <div class="stat-card">
+        <span>Question</span>
+        <strong id="questionCounter">1/80</strong>
+      </div>
+      <div class="stat-card">
+        <span>Score</span>
+        <strong id="scoreCounter">0</strong>
+      </div>
+      <div class="stat-card">
+        <span>Correct</span>
+        <strong id="correctCounter">0</strong>
+      </div>
+      <div class="stat-card">
+        <span>Wrong</span>
+        <strong id="wrongCounter">0</strong>
+      </div>
+    </div>
+
+    <div class="quiz-card" id="quizCard">
+      <div class="controls">
+        <div class="select-wrap">
+          <label for="sectionSelect">Section:</label>
+          <select id="sectionSelect">
+            <option value="all">All Questions</option>
+            <option value="devops">DevOps Only</option>
+            <option value="microservices">Microservices Only</option>
+            <option value="docker">Docker Only</option>
+            <option value="mixed">Mixed Application Questions</option>
+          </select>
+        </div>
+        <button class="secondary" onclick="restartQuiz()">Restart Quiz</button>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div class="question-meta" id="questionMeta">Question 1</div>
+      <div class="question" id="questionText">Loading question...</div>
+      <div class="options" id="optionsBox"></div>
+
+      <div class="feedback" id="feedbackBox"></div>
+
+      <div class="nav-buttons">
+        <button class="secondary" onclick="previousQuestion()">Previous</button>
+        <button onclick="nextQuestion()" id="nextBtn">Next</button>
+      </div>
+    </div>
+
+    <div class="result-card" id="resultCard">
+      <h2>Quiz Completed!</h2>
+      <div class="score-big" id="finalScore">0/80</div>
+      <p id="resultMessage"></p>
+      <button onclick="restartQuiz()">Try Again</button>
+      <button class="secondary" onclick="toggleReview()">Show / Hide Review</button>
+      <div class="review-list" id="reviewList"></div>
+    </div>
+
+    <footer>
+      Tip: For exam revision, first try “All Questions”, then repeat the sections where you scored low.
+    </footer>
+  </div>
+
+  <script>
+    const allQuestions = [
+      {
+            "q": "What does DevOps mainly combine?",
+            "options": [
+                  "Database and networking",
+                  "Development and operations",
+                  "Hardware and software",
+                  "Frontend and backend"
+            ],
+            "answer": 1,
+            "explanation": "DevOps combines Development and Operations."
+      },
+      {
+            "q": "What is the main goal of DevOps?",
+            "options": [
+                  "To remove testing completely",
+                  "To make developers work alone",
+                  "To deliver software faster and more reliably",
+                  "To avoid using servers"
+            ],
+            "answer": 2,
+            "explanation": "DevOps aims to deliver software faster, safer, and more reliably."
+      },
+      {
+            "q": "DevOps is best described as:",
+            "options": [
+                  "Only a programming language",
+                  "Only a cloud service",
+                  "A combination of culture, practices, and tools",
+                  "A type of database"
+            ],
+            "answer": 2,
+            "explanation": "DevOps is not just tools; it includes culture, practices, and tools."
+      },
+      {
+            "q": "In traditional software development, one major problem between development and operations teams is:",
+            "options": [
+                  "Too much storage",
+                  "Miscommunication and lack of collaboration",
+                  "Too many users",
+                  "No internet connection"
+            ],
+            "answer": 1,
+            "explanation": "Traditional teams often suffer from poor communication between developers and operations."
+      },
+      {
+            "q": "Developers usually focus on:",
+            "options": [
+                  "Releasing new features quickly",
+                  "Buying hardware",
+                  "Writing legal documents",
+                  "Designing office networks only"
+            ],
+            "answer": 0,
+            "explanation": "Developers usually focus on building and releasing new features."
+      },
+      {
+            "q": "Operations teams usually focus on:",
+            "options": [
+                  "Creating logos",
+                  "System stability and availability",
+                  "Writing frontend CSS only",
+                  "Removing all users"
+            ],
+            "answer": 1,
+            "explanation": "Operations teams focus on keeping systems stable and available."
+      },
+      {
+            "q": "DevOps tries to remove:",
+            "options": [
+                  "All developers",
+                  "All applications",
+                  "Roadblocks in the software release process",
+                  "The need for software"
+            ],
+            "answer": 2,
+            "explanation": "DevOps removes roadblocks that slow down software delivery."
+      },
+      {
+            "q": "Which of the following is a benefit of DevOps?",
+            "options": [
+                  "Slower delivery",
+                  "More manual errors",
+                  "Better collaboration",
+                  "Less communication"
+            ],
+            "answer": 2,
+            "explanation": "DevOps improves collaboration between teams."
+      },
+      {
+            "q": "Which of the following is NOT a DevOps benefit?",
+            "options": [
+                  "Faster delivery",
+                  "Improved collaboration",
+                  "Better reliability",
+                  "Complete removal of testing"
+            ],
+            "answer": 3,
+            "explanation": "DevOps does not remove testing; it encourages automated testing."
+      },
+      {
+            "q": "DevOps encourages teams to:",
+            "options": [
+                  "Work separately",
+                  "Communicate and collaborate more",
+                  "Avoid automation",
+                  "Deploy only once per year"
+            ],
+            "answer": 1,
+            "explanation": "DevOps encourages communication, collaboration, and shared responsibility."
+      },
+      {
+            "q": "Which sequence best represents a simple software release process?",
+            "options": [
+                  "Monitor → Code → Plan → Delete",
+                  "Plan → Code → Test → Deploy → Monitor",
+                  "Deploy → Plan → Ignore → Delete",
+                  "Test → Delete → Code → Stop"
+            ],
+            "answer": 1,
+            "explanation": "A common lifecycle is Plan, Code, Test, Deploy, and Monitor."
+      },
+      {
+            "q": "What does CI stand for?",
+            "options": [
+                  "Computer Integration",
+                  "Continuous Integration",
+                  "Code Installation",
+                  "Cloud Information"
+            ],
+            "answer": 1,
+            "explanation": "CI stands for Continuous Integration."
+      },
+      {
+            "q": "Continuous Integration means:",
+            "options": [
+                  "Developers frequently merge code and automated tests are run",
+                  "Code is never tested",
+                  "Only operations team writes code",
+                  "Applications are deleted after testing"
+            ],
+            "answer": 0,
+            "explanation": "CI means frequent code integration with automated builds/tests."
+      },
+      {
+            "q": "What does CD usually stand for in DevOps?",
+            "options": [
+                  "Continuous Delivery",
+                  "Computer Database",
+                  "Code Design",
+                  "Cloud Download"
+            ],
+            "answer": 0,
+            "explanation": "CD usually stands for Continuous Delivery, and sometimes Continuous Deployment."
+      },
+      {
+            "q": "Continuous Delivery means:",
+            "options": [
+                  "Code is always kept ready for release",
+                  "Developers never commit code",
+                  "Testing is done only after deployment",
+                  "Servers are removed"
+            ],
+            "answer": 0,
+            "explanation": "Continuous Delivery keeps software in a release-ready state."
+      },
+      {
+            "q": "Continuous Deployment means:",
+            "options": [
+                  "Code is manually copied using USB",
+                  "Code is automatically deployed after passing tests",
+                  "Code is never deployed",
+                  "Only documentation is deployed"
+            ],
+            "answer": 1,
+            "explanation": "Continuous Deployment automatically deploys code after tests pass."
+      },
+      {
+            "q": "Which is the correct difference between Continuous Delivery and Continuous Deployment?",
+            "options": [
+                  "Continuous Delivery may require manual approval, Continuous Deployment deploys automatically",
+                  "Continuous Delivery means no testing, Continuous Deployment means manual testing",
+                  "Both mean exactly the opposite of CI",
+                  "Continuous Deployment is only for databases"
+            ],
+            "answer": 0,
+            "explanation": "Delivery prepares code for release; Deployment releases automatically after passing tests."
+      },
+      {
+            "q": "What is a CI/CD pipeline?",
+            "options": [
+                  "A physical water pipe",
+                  "An automated sequence from code to build, test, and deployment",
+                  "A type of monitor",
+                  "A programming language"
+            ],
+            "answer": 1,
+            "explanation": "A CI/CD pipeline automates build, test, package, and deployment steps."
+      },
+      {
+            "q": "In a CI/CD pipeline, which tool is commonly used for build automation?",
+            "options": [
+                  "Jenkins",
+                  "Microsoft Word",
+                  "Paint",
+                  "Calculator"
+            ],
+            "answer": 0,
+            "explanation": "Jenkins is a common CI/CD and build automation tool."
+      },
+      {
+            "q": "In DevOps, Git is mainly used for:",
+            "options": [
+                  "Version control/code repository",
+                  "Image editing",
+                  "Playing videos",
+                  "Buying servers"
+            ],
+            "answer": 0,
+            "explanation": "Git is used for version control and collaboration on code."
+      },
+      {
+            "q": "Infrastructure as Code means:",
+            "options": [
+                  "Writing application UI using HTML",
+                  "Managing infrastructure using code",
+                  "Removing all infrastructure",
+                  "Drawing server diagrams manually"
+            ],
+            "answer": 1,
+            "explanation": "IaC means infrastructure is created and managed using code."
+      },
+      {
+            "q": "Which of the following is an Infrastructure as Code tool?",
+            "options": [
+                  "Terraform",
+                  "Photoshop",
+                  "VLC Player",
+                  "MS Paint"
+            ],
+            "answer": 0,
+            "explanation": "Terraform is used for infrastructure provisioning as code."
+      },
+      {
+            "q": "Which of the following is a configuration management tool?",
+            "options": [
+                  "Ansible",
+                  "YouTube",
+                  "Excel",
+                  "Zoom"
+            ],
+            "answer": 0,
+            "explanation": "Ansible is used for configuration management and automation."
+      },
+      {
+            "q": "Why is Infrastructure as Code useful?",
+            "options": [
+                  "It makes infrastructure harder to repeat",
+                  "It makes infrastructure easier to recreate, track, and automate",
+                  "It removes the need for servers",
+                  "It prevents coding"
+            ],
+            "answer": 1,
+            "explanation": "IaC makes infrastructure repeatable, trackable, and easier to recover."
+      },
+      {
+            "q": "What is monitoring in DevOps?",
+            "options": [
+                  "Watching application/system health and performance",
+                  "Designing a logo",
+                  "Deleting old files",
+                  "Turning off servers permanently"
+            ],
+            "answer": 0,
+            "explanation": "Monitoring observes system health, performance, and problems."
+      },
+      {
+            "q": "What is logging?",
+            "options": [
+                  "Recording events and errors that happen in the system",
+                  "Removing system history",
+                  "Drawing network cables",
+                  "Creating passwords only"
+            ],
+            "answer": 0,
+            "explanation": "Logs record events, errors, and actions in a system."
+      },
+      {
+            "q": "DevSecOps means:",
+            "options": [
+                  "Removing security from DevOps",
+                  "Adding security into the DevOps process",
+                  "Only testing the UI",
+                  "Avoiding deployment"
+            ],
+            "answer": 1,
+            "explanation": "DevSecOps integrates security into the DevOps lifecycle."
+      },
+      {
+            "q": "Which one best describes SRE?",
+            "options": [
+                  "Site Reliability Engineering",
+                  "Software Random Execution",
+                  "Server Removal Environment",
+                  "System Restart Error"
+            ],
+            "answer": 0,
+            "explanation": "SRE stands for Site Reliability Engineering."
+      },
+      {
+            "q": "SRE mainly focuses on:",
+            "options": [
+                  "Reliability and system stability",
+                  "Only graphic design",
+                  "Replacing all developers",
+                  "Removing monitoring"
+            ],
+            "answer": 0,
+            "explanation": "SRE focuses on reliability, stability, uptime, and performance."
+      },
+      {
+            "q": "A DevOps engineer is mainly responsible for:",
+            "options": [
+                  "Creating a streamlined and automated release process",
+                  "Only designing posters",
+                  "Only writing exam papers",
+                  "Only selling software"
+            ],
+            "answer": 0,
+            "explanation": "DevOps engineers help automate and improve release/deployment processes."
+      },
+      {
+            "q": "What is microservices architecture?",
+            "options": [
+                  "Building one large application only",
+                  "Breaking an application into small independent services",
+                  "Removing all services",
+                  "Using only one database table"
+            ],
+            "answer": 1,
+            "explanation": "Microservices split an application into small independent services."
+      },
+      {
+            "q": "In a monolithic architecture:",
+            "options": [
+                  "All parts are developed, deployed, and scaled as one unit",
+                  "Every feature is always deployed separately",
+                  "Each service uses a separate repository by default",
+                  "No code is needed"
+            ],
+            "answer": 0,
+            "explanation": "A monolith is built, deployed, and scaled as one unit."
+      },
+      {
+            "q": "Which of the following is an example of a microservice in an online shopping system?",
+            "options": [
+                  "Payment service",
+                  "Keyboard service",
+                  "Monitor service",
+                  "Mouse service"
+            ],
+            "answer": 0,
+            "explanation": "Payment service is a business function and can be a microservice."
+      },
+      {
+            "q": "Microservices should usually be divided based on:",
+            "options": [
+                  "Business functionality",
+                  "Color of the code editor",
+                  "Size of the monitor",
+                  "Number of students in class"
+            ],
+            "answer": 0,
+            "explanation": "Microservices should be separated by business capability."
+      },
+      {
+            "q": "Which is a good microservice division for an online shop?",
+            "options": [
+                  "Product service, cart service, payment service",
+                  "HTML service, CSS service, keyboard service",
+                  "Laptop service, chair service, classroom service",
+                  "Blue service, red service, green service"
+            ],
+            "answer": 0,
+            "explanation": "Product, cart, and payment are business functions."
+      },
+      {
+            "q": "A good microservice should:",
+            "options": [
+                  "Do one specific job",
+                  "Do every job in the system",
+                  "Depend tightly on all other services",
+                  "Be impossible to deploy separately"
+            ],
+            "answer": 0,
+            "explanation": "A microservice should be focused on one responsibility."
+      },
+      {
+            "q": "Loose coupling means:",
+            "options": [
+                  "Services are strongly dependent on each other",
+                  "Services are independent and not tightly connected",
+                  "All services must share the same code file",
+                  "Services cannot communicate"
+            ],
+            "answer": 1,
+            "explanation": "Loose coupling means services are not tightly dependent on each other."
+      },
+      {
+            "q": "In microservices, each service can usually be:",
+            "options": [
+                  "Developed, deployed, and scaled independently",
+                  "Only deployed with the full application",
+                  "Used without any communication",
+                  "Written only in one global programming language"
+            ],
+            "answer": 0,
+            "explanation": "Independence is a key characteristic of microservices."
+      },
+      {
+            "q": "Which of the following is a benefit of microservices?",
+            "options": [
+                  "Independent scaling",
+                  "Forced full application deployment for every small change",
+                  "No communication allowed",
+                  "All teams must work on one file"
+            ],
+            "answer": 0,
+            "explanation": "Microservices allow independent scaling of services."
+      },
+      {
+            "q": "Which of the following is a challenge of microservices?",
+            "options": [
+                  "Communication between services becomes more complex",
+                  "Applications become impossible to deploy",
+                  "No tools can support it",
+                  "It removes all network communication"
+            ],
+            "answer": 0,
+            "explanation": "Microservices introduce communication and monitoring complexity."
+      },
+      {
+            "q": "In microservices, API calls are usually:",
+            "options": [
+                  "Synchronous communication",
+                  "Offline communication only",
+                  "Manual paper communication",
+                  "No communication"
+            ],
+            "answer": 0,
+            "explanation": "API calls are usually synchronous request-response communication."
+      },
+      {
+            "q": "Synchronous communication means:",
+            "options": [
+                  "One service sends a request and waits for a response",
+                  "One service sends a message and never expects anything",
+                  "No service communicates",
+                  "Communication happens only through USB"
+            ],
+            "answer": 0,
+            "explanation": "Synchronous means the caller waits for a response."
+      },
+      {
+            "q": "A message broker is used for:",
+            "options": [
+                  "Asynchronous communication between services",
+                  "Formatting Microsoft Word files",
+                  "Drawing diagrams",
+                  "Creating usernames only"
+            ],
+            "answer": 0,
+            "explanation": "Message brokers help services communicate asynchronously."
+      },
+      {
+            "q": "Which is an example of a message broker?",
+            "options": [
+                  "RabbitMQ",
+                  "Photoshop",
+                  "Notepad",
+                  "PowerPoint"
+            ],
+            "answer": 0,
+            "explanation": "RabbitMQ is a message broker."
+      },
+      {
+            "q": "Asynchronous communication means:",
+            "options": [
+                  "A service sends a message without waiting directly for an immediate response",
+                  "A service must wait forever",
+                  "Services cannot communicate",
+                  "All services must be stopped"
+            ],
+            "answer": 0,
+            "explanation": "Asynchronous communication does not require immediate direct waiting."
+      },
+      {
+            "q": "A service mesh is:",
+            "options": [
+                  "A helper layer that manages service-to-service communication",
+                  "A type of keyboard",
+                  "A database table",
+                  "A programming exam"
+            ],
+            "answer": 0,
+            "explanation": "A service mesh manages communication between services."
+      },
+      {
+            "q": "Which tool/platform is commonly used to run large microservices applications?",
+            "options": [
+                  "Kubernetes",
+                  "MS Paint",
+                  "Calculator",
+                  "WordPad"
+            ],
+            "answer": 0,
+            "explanation": "Kubernetes is commonly used to run and manage containerized microservices."
+      },
+      {
+            "q": "Kubernetes is mainly used for:",
+            "options": [
+                  "Managing containers and containerized applications",
+                  "Writing essays",
+                  "Designing posters",
+                  "Creating only static HTML pages"
+            ],
+            "answer": 0,
+            "explanation": "Kubernetes orchestrates containers."
+      },
+      {
+            "q": "What is a monorepo?",
+            "options": [
+                  "One repository containing all services",
+                  "One service with no repository",
+                  "A separate repository for each line of code",
+                  "A database backup method"
+            ],
+            "answer": 0,
+            "explanation": "Monorepo means one repository contains all services."
+      },
+      {
+            "q": "One advantage of monorepo is:",
+            "options": [
+                  "Easier to clone and manage one repository",
+                  "It always prevents tight coupling",
+                  "It removes the need for CI/CD",
+                  "It cannot contain shared files"
+            ],
+            "answer": 0,
+            "explanation": "A monorepo can be easier to clone and manage for small projects."
+      },
+      {
+            "q": "One disadvantage of monorepo is:",
+            "options": [
+                  "Services may become tightly coupled if not handled carefully",
+                  "It cannot store code",
+                  "It does not support folders",
+                  "It removes all developers"
+            ],
+            "answer": 0,
+            "explanation": "Monorepo can lead to accidental tight coupling."
+      },
+      {
+            "q": "What is a polyrepo?",
+            "options": [
+                  "A separate repository for each service",
+                  "One large repository for all services",
+                  "A repository without code",
+                  "A cloud server only"
+            ],
+            "answer": 0,
+            "explanation": "Polyrepo means each service has its own separate repository."
+      },
+      {
+            "q": "One advantage of polyrepo is:",
+            "options": [
+                  "Better isolation between services",
+                  "All services must be deployed together",
+                  "It makes repositories larger always",
+                  "It removes version control"
+            ],
+            "answer": 0,
+            "explanation": "Polyrepo provides better isolation for each service."
+      },
+      {
+            "q": "One disadvantage of polyrepo is:",
+            "options": [
+                  "Managing many repositories can become harder",
+                  "It cannot have separate pipelines",
+                  "It forces all services into one folder",
+                  "It prevents team separation"
+            ],
+            "answer": 0,
+            "explanation": "Many repositories can become harder to manage."
+      },
+      {
+            "q": "What is Docker?",
+            "options": [
+                  "A platform/ecosystem for creating and running containers",
+                  "A programming language",
+                  "A database only",
+                  "A web browser"
+            ],
+            "answer": 0,
+            "explanation": "Docker is used to build, package, share, and run containers."
+      },
+      {
+            "q": "Docker mainly helps solve the problem:",
+            "options": [
+                  "“It works on my machine but not on your machine”",
+                  "“The monitor is too small”",
+                  "“The keyboard is broken”",
+                  "“The internet is expensive”"
+            ],
+            "answer": 0,
+            "explanation": "Docker solves environment mismatch problems."
+      },
+      {
+            "q": "A Docker container contains:",
+            "options": [
+                  "Application and required dependencies/environment",
+                  "Only images",
+                  "Only videos",
+                  "Only passwords"
+            ],
+            "answer": 0,
+            "explanation": "A container packages the application with dependencies and runtime environment."
+      },
+      {
+            "q": "Why can an application fail on a tester’s machine even if it worked on the developer’s machine?",
+            "options": [
+                  "Dependency or library versions may be different",
+                  "The application has no code",
+                  "Testing is illegal",
+                  "The monitor size is different"
+            ],
+            "answer": 0,
+            "explanation": "Different dependencies, libraries, or environments can cause failures."
+      },
+      {
+            "q": "Docker helps by packaging:",
+            "options": [
+                  "Application, libraries, dependencies, and runtime environment",
+                  "Only keyboard settings",
+                  "Only screenshots",
+                  "Only exam questions"
+            ],
+            "answer": 0,
+            "explanation": "Docker packages the app and everything needed to run it."
+      },
+      {
+            "q": "A container is best described as:",
+            "options": [
+                  "A lightweight running environment for an application",
+                  "A physical shipping box only",
+                  "A type of exam paper",
+                  "A monitor cable"
+            ],
+            "answer": 0,
+            "explanation": "A container is a lightweight isolated environment for running an app."
+      },
+      {
+            "q": "What is a Docker image?",
+            "options": [
+                  "A template/blueprint used to create containers",
+                  "A running application only",
+                  "A physical server",
+                  "A network cable"
+            ],
+            "answer": 0,
+            "explanation": "A Docker image is the template used to create containers."
+      },
+      {
+            "q": "What is a Docker container?",
+            "options": [
+                  "A running instance of an image",
+                  "A drawing file",
+                  "A cloud bill",
+                  "A laptop model"
+            ],
+            "answer": 0,
+            "explanation": "A container is a running instance of a Docker image."
+      },
+      {
+            "q": "Which comparison is correct?",
+            "options": [
+                  "Image = class, Container = object",
+                  "Image = object, Container = class",
+                  "Image = keyboard, Container = mouse",
+                  "Image = monitor, Container = printer"
+            ],
+            "answer": 0,
+            "explanation": "An image is like a class/blueprint, while a container is like an object/running instance."
+      },
+      {
+            "q": "One Docker image can be used to create:",
+            "options": [
+                  "Multiple containers",
+                  "Only one physical computer",
+                  "Only one database row",
+                  "No container"
+            ],
+            "answer": 0,
+            "explanation": "Multiple containers can be created from one image."
+      },
+      {
+            "q": "Docker Hub is used to:",
+            "options": [
+                  "Store, share, and download Docker images",
+                  "Write Java code only",
+                  "Edit videos",
+                  "Send emails only"
+            ],
+            "answer": 0,
+            "explanation": "Docker Hub is a repository for Docker images."
+      },
+      {
+            "q": "Which command idea is related to downloading an image?",
+            "options": [
+                  "docker pull",
+                  "docker paint",
+                  "docker type",
+                  "docker erase"
+            ],
+            "answer": 0,
+            "explanation": "docker pull downloads an image."
+      },
+      {
+            "q": "Docker Engine is mainly responsible for:",
+            "options": [
+                  "Running and managing Docker containers",
+                  "Designing websites only",
+                  "Creating exam marks",
+                  "Editing photos"
+            ],
+            "answer": 0,
+            "explanation": "Docker Engine runs and manages containers."
+      },
+      {
+            "q": "A virtual machine usually includes:",
+            "options": [
+                  "A full guest operating system",
+                  "Only a browser tab",
+                  "Only a text file",
+                  "Only one dependency"
+            ],
+            "answer": 0,
+            "explanation": "A VM usually contains a full guest operating system."
+      },
+      {
+            "q": "What is a hypervisor used for?",
+            "options": [
+                  "Running virtual machines",
+                  "Writing HTML",
+                  "Creating images in Paint",
+                  "Sending SMS"
+            ],
+            "answer": 0,
+            "explanation": "A hypervisor is used to create and run virtual machines."
+      },
+      {
+            "q": "Why are virtual machines heavier than containers?",
+            "options": [
+                  "Each VM usually has its own full operating system",
+                  "VMs do not use any resources",
+                  "VMs are only text files",
+                  "Containers need more operating systems than VMs"
+            ],
+            "answer": 0,
+            "explanation": "Each VM includes a full guest OS, using more resources."
+      },
+      {
+            "q": "Docker containers are lighter because:",
+            "options": [
+                  "They share the host OS kernel",
+                  "They each install a full guest OS",
+                  "They do not run applications",
+                  "They require more RAM than VMs always"
+            ],
+            "answer": 0,
+            "explanation": "Containers share the host OS kernel instead of running full guest OSs."
+      },
+      {
+            "q": "Which statement is correct?",
+            "options": [
+                  "Containers virtualize the operating system, VMs virtualize hardware",
+                  "Containers and VMs are exactly the same",
+                  "VMs are always smaller than containers",
+                  "Containers cannot run applications"
+            ],
+            "answer": 0,
+            "explanation": "Containers use OS-level virtualization; VMs virtualize hardware."
+      },
+      {
+            "q": "Which one usually starts faster?",
+            "options": [
+                  "Docker container",
+                  "Virtual machine",
+                  "Full guest OS installation",
+                  "Physical server purchase"
+            ],
+            "answer": 0,
+            "explanation": "Containers usually start faster than VMs."
+      },
+      {
+            "q": "Which uses more resources generally?",
+            "options": [
+                  "Virtual machine",
+                  "Docker container",
+                  "Text file",
+                  "API endpoint"
+            ],
+            "answer": 0,
+            "explanation": "VMs generally use more CPU, memory, and storage than containers."
+      },
+      {
+            "q": "A company wants to release software updates many times with fewer manual steps. Which concept helps most?",
+            "options": [
+                  "DevOps",
+                  "Manual deployment only",
+                  "Monolithic architecture only",
+                  "Disabling testing"
+            ],
+            "answer": 0,
+            "explanation": "DevOps supports automated, frequent, reliable releases."
+      },
+      {
+            "q": "A company has one huge application and every small change requires deploying the whole application. What architecture is this likely to be?",
+            "options": [
+                  "Monolithic architecture",
+                  "Microservices architecture",
+                  "Service mesh",
+                  "Message broker"
+            ],
+            "answer": 0,
+            "explanation": "A monolith is usually deployed as one whole application."
+      },
+      {
+            "q": "A company wants the payment service to scale separately from the product service. Which architecture supports this better?",
+            "options": [
+                  "Microservices",
+                  "Monolithic",
+                  "Single file architecture",
+                  "No-server architecture"
+            ],
+            "answer": 0,
+            "explanation": "Microservices support independent scaling."
+      },
+      {
+            "q": "A developer sends an app to the tester, but it fails because the tester has a different library version. What technology helps solve this?",
+            "options": [
+                  "Docker",
+                  "Paint",
+                  "Excel",
+                  "Calculator"
+            ],
+            "answer": 0,
+            "explanation": "Docker packages dependencies to keep environments consistent."
+      },
+      {
+            "q": "A system has many containers and needs automatic management, scaling, and deployment. Which tool is most suitable?",
+            "options": [
+                  "Kubernetes",
+                  "Notepad",
+                  "VLC Player",
+                  "WordPad"
+            ],
+            "answer": 0,
+            "explanation": "Kubernetes manages many containers and containerized applications."
+      },
+      {
+            "q": "A team wants to include security checks throughout the DevOps process. What is this called?",
+            "options": [
+                  "DevSecOps",
+                  "Monorepo",
+                  "Docker Hub",
+                  "Hypervisor"
+            ],
+            "answer": 0,
+            "explanation": "DevSecOps integrates security into DevOps."
+      }
+];
+
+    const sections = {
+      devops: [0, 29],
+      microservices: [30, 53],
+      docker: [54, 73],
+      mixed: [74, 79]
+    };
+
+    let quizQuestions = [...allQuestions];
+    let currentIndex = 0;
+    let score = 0;
+    let correct = 0;
+    let wrong = 0;
+    let answered = [];
+    let reviewOpen = false;
+
+    const questionCounter = document.getElementById("questionCounter");
+    const scoreCounter = document.getElementById("scoreCounter");
+    const correctCounter = document.getElementById("correctCounter");
+    const wrongCounter = document.getElementById("wrongCounter");
+    const progressFill = document.getElementById("progressFill");
+    const questionMeta = document.getElementById("questionMeta");
+    const questionText = document.getElementById("questionText");
+    const optionsBox = document.getElementById("optionsBox");
+    const feedbackBox = document.getElementById("feedbackBox");
+    const quizCard = document.getElementById("quizCard");
+    const resultCard = document.getElementById("resultCard");
+    const finalScore = document.getElementById("finalScore");
+    const resultMessage = document.getElementById("resultMessage");
+    const reviewList = document.getElementById("reviewList");
+    const sectionSelect = document.getElementById("sectionSelect");
+    const nextBtn = document.getElementById("nextBtn");
+
+    sectionSelect.addEventListener("change", () => {
+      restartQuiz();
+    });
+
+    function getSelectedQuestions() {
+      const value = sectionSelect.value;
+      if (value === "all") return [...allQuestions];
+
+      const range = sections[value];
+      return allQuestions.slice(range[0], range[1] + 1);
+    }
+
+    function restartQuiz() {
+      quizQuestions = getSelectedQuestions();
+      currentIndex = 0;
+      score = 0;
+      correct = 0;
+      wrong = 0;
+      answered = new Array(quizQuestions.length).fill(null);
+      reviewOpen = false;
+      quizCard.style.display = "block";
+      resultCard.style.display = "none";
+      reviewList.style.display = "none";
+      renderQuestion();
+      updateStats();
+    }
+
+    function renderQuestion() {
+      const q = quizQuestions[currentIndex];
+      questionMeta.textContent = `Question ${currentIndex + 1} of ${quizQuestions.length}`;
+      questionText.textContent = q.q;
+      optionsBox.innerHTML = "";
+      feedbackBox.style.display = "none";
+      feedbackBox.className = "feedback";
+
+      q.options.forEach((option, index) => {
+        const btn = document.createElement("button");
+        btn.className = "option";
+        btn.textContent = `${String.fromCharCode(65 + index)}. ${option}`;
+        btn.onclick = () => selectAnswer(index);
+        optionsBox.appendChild(btn);
+      });
+
+      if (answered[currentIndex]) {
+        showAnsweredState();
+      }
+
+      nextBtn.textContent = currentIndex === quizQuestions.length - 1 ? "Finish" : "Next";
+      updateStats();
+    }
+
+    function selectAnswer(selectedIndex) {
+      if (answered[currentIndex]) return;
+
+      const q = quizQuestions[currentIndex];
+      const isCorrect = selectedIndex === q.answer;
+
+      answered[currentIndex] = {
+        selected: selectedIndex,
+        correctAnswer: q.answer,
+        isCorrect: isCorrect
+      };
+
+      if (isCorrect) {
+        score++;
+        correct++;
+      } else {
+        wrong++;
+      }
+
+      showAnsweredState();
+      updateStats();
+    }
+
+    function showAnsweredState() {
+      const q = quizQuestions[currentIndex];
+      const answerData = answered[currentIndex];
+      const buttons = document.querySelectorAll(".option");
+
+      buttons.forEach((btn, index) => {
+        btn.classList.add("disabled");
+        btn.disabled = true;
+
+        if (index === q.answer) {
+          btn.classList.add("correct");
+        }
+
+        if (index === answerData.selected && index !== q.answer) {
+          btn.classList.add("wrong");
+        }
+      });
+
+      feedbackBox.style.display = "block";
+      feedbackBox.classList.add(answerData.isCorrect ? "correct" : "wrong");
+      feedbackBox.innerHTML = answerData.isCorrect
+        ? `<strong>Correct!</strong><br>${q.explanation}`
+        : `<strong>Wrong.</strong><br>Correct answer: <strong>${String.fromCharCode(65 + q.answer)}. ${q.options[q.answer]}</strong><br>${q.explanation}`;
+    }
+
+    function updateStats() {
+      questionCounter.textContent = `${currentIndex + 1}/${quizQuestions.length}`;
+      scoreCounter.textContent = score;
+      correctCounter.textContent = correct;
+      wrongCounter.textContent = wrong;
+      const progress = ((currentIndex + 1) / quizQuestions.length) * 100;
+      progressFill.style.width = `${progress}%`;
+    }
+
+    function nextQuestion() {
+      if (currentIndex < quizQuestions.length - 1) {
+        currentIndex++;
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function previousQuestion() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderQuestion();
+      }
+    }
+
+    function showResults() {
+      quizCard.style.display = "none";
+      resultCard.style.display = "block";
+      finalScore.textContent = `${score}/${quizQuestions.length}`;
+
+      const percentage = Math.round((score / quizQuestions.length) * 100);
+
+      if (percentage >= 85) {
+        resultMessage.textContent = `Excellent! You scored ${percentage}%. You are well prepared.`;
+      } else if (percentage >= 65) {
+        resultMessage.textContent = `Good work! You scored ${percentage}%. Revise the wrong answers once more.`;
+      } else if (percentage >= 45) {
+        resultMessage.textContent = `You scored ${percentage}%. You understand some parts, but revise the theory notes again.`;
+      } else {
+        resultMessage.textContent = `You scored ${percentage}%. Start with the comparison tables and basic definitions again.`;
+      }
+
+      buildReview();
+    }
+
+    function buildReview() {
+      reviewList.innerHTML = "";
+
+      quizQuestions.forEach((q, index) => {
+        const data = answered[index];
+        const div = document.createElement("div");
+        div.className = "review-item";
+
+        if (!data) {
+          div.innerHTML = `
+            <span class="tag wrong">Not answered</span>
+            <strong>Q${index + 1}. ${q.q}</strong><br>
+            Correct answer: <strong>${String.fromCharCode(65 + q.answer)}. ${q.options[q.answer]}</strong><br>
+            ${q.explanation}
+          `;
+        } else {
+          div.innerHTML = `
+            <span class="tag ${data.isCorrect ? "correct" : "wrong"}">${data.isCorrect ? "Correct" : "Wrong"}</span>
+            <strong>Q${index + 1}. ${q.q}</strong><br>
+            Your answer: <strong>${String.fromCharCode(65 + data.selected)}. ${q.options[data.selected]}</strong><br>
+            Correct answer: <strong>${String.fromCharCode(65 + q.answer)}. ${q.options[q.answer]}</strong><br>
+            ${q.explanation}
+          `;
+        }
+
+        reviewList.appendChild(div);
+      });
+    }
+
+    function toggleReview() {
+      reviewOpen = !reviewOpen;
+      reviewList.style.display = reviewOpen ? "block" : "none";
+    }
+
+    restartQuiz();
+  </script>
+</body>
+</html>
